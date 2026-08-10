@@ -11,6 +11,8 @@ export interface TravelModeState {
 }
 
 const STORAGE_KEY = 'kanpur_metro_travel_mode';
+/** Same-tab sync — storage events don't fire in the tab that wrote. */
+const SYNC_EVENT = 'km-travel-mode-changed';
 
 interface StoredTravel {
   journey: Journey;
@@ -42,8 +44,10 @@ function readStored(): TravelModeState {
  * "I'm Travelling" mode.
  * - Simple companion, not a live tracker.
  * - Uses journey start time + estimated minutes to derive ETA.
- * - Saved to sessionStorage so a page refresh does not interrupt it.
- * - Explicitly NOT real-time GPS tracking; disclaimer shown in UI.
+ * - sessionStorage is the source of truth so EVERY mounted instance
+ *   (JourneyResult on the page + TravelMode overlay in the root layout)
+ *   stays in sync — in this tab via a custom event, across tabs via storage.
+ * - Explicitly NOT continuous GPS tracking; disclaimer shown in UI.
  */
 export function useTravelMode() {
   const [state, setState] = useState<TravelModeState>({
@@ -53,10 +57,17 @@ export function useTravelMode() {
     estimatedArrival: null,
   });
 
-  // Restore travel mode after a page refresh (sessionStorage only).
+  // Hydrate from sessionStorage and keep this instance in sync with
+  // any start/exit happening elsewhere (other hook instances or tabs).
   useEffect(() => {
-    const stored = readStored();
-    if (stored.isActive && stored.journey && stored.startTime) setState(stored);
+    const sync = () => setState(readStored());
+    sync();
+    window.addEventListener(SYNC_EVENT, sync);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener(SYNC_EVENT, sync);
+      window.removeEventListener('storage', sync);
+    };
   }, []);
 
   const startTravelMode = useCallback((journey: Journey) => {
@@ -65,8 +76,7 @@ export function useTravelMode() {
       journey.estimatedTimeMinutes == null
         ? null
         : new Date(startTime.getTime() + journey.estimatedTimeMinutes * 60 * 1000);
-    const next: TravelModeState = { isActive: true, journey, startTime, estimatedArrival };
-    setState(next);
+    setState({ isActive: true, journey, startTime, estimatedArrival });
     try {
       window.sessionStorage.setItem(
         STORAGE_KEY,
@@ -75,6 +85,7 @@ export function useTravelMode() {
     } catch {
       /* sessionStorage unavailable — mode still works in memory */
     }
+    window.dispatchEvent(new Event(SYNC_EVENT));
   }, []);
 
   const exitTravelMode = useCallback(() => {
@@ -84,6 +95,7 @@ export function useTravelMode() {
     } catch {
       /* ignore */
     }
+    window.dispatchEvent(new Event(SYNC_EVENT));
   }, []);
 
   return { ...state, startTravelMode, exitTravelMode };
