@@ -72,41 +72,10 @@ function JourneyView({ journey }: { journey: Journey }) {
 
   return (
     <section className="card p-5 sm:p-6" aria-label="Journey result">
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-center gap-2 text-lg font-semibold">
-          <span className="truncate">{journey.from.name}</span>
-          <MoveRight className="h-5 w-5 shrink-0 text-muted" aria-hidden="true" />
-          <span className="truncate">{journey.to.name}</span>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          {/* Feature 3 — Save this journey */}
-          <button
-            type="button"
-            onClick={handleToggleSave}
-            aria-pressed={alreadySaved}
-            className={cn('btn h-11 w-full justify-center px-3 text-sm sm:w-auto', alreadySaved ? 'btn-primary' : 'btn-secondary')}
-          >
-            <Star className={cn('h-4 w-4', alreadySaved && 'fill-current')} aria-hidden="true" />
-            {alreadySaved ? 'Saved' : 'Save'}
-          </button>
-          {/* Feature 7 — Send to friend */}
-          <button type="button" onClick={handleShare} className="btn btn-secondary h-11 w-full justify-center px-3 text-sm sm:w-auto">
-            {copied ? (
-              <Check className="h-4 w-4 text-operational" aria-hidden="true" />
-            ) : (
-              <Share2 className="h-4 w-4" aria-hidden="true" />
-            )}
-            {copied ? 'Copied!' : 'Share'}
-          </button>
-          <button
-            type="button"
-            onClick={handleShareWhatsApp}
-            className="btn btn-secondary h-11 w-full justify-center px-3 text-sm sm:w-auto"
-            aria-label="Send this journey to a friend on WhatsApp"
-          >
-            WhatsApp
-          </button>
-        </div>
+      <div className="flex min-w-0 items-center gap-2 text-lg font-semibold">
+        <span className="truncate">{journey.from.name}</span>
+        <MoveRight className="h-5 w-5 shrink-0 text-muted" aria-hidden="true" />
+        <span className="truncate">{journey.to.name}</span>
       </div>
 
       <dl className="mt-4 grid grid-cols-3 gap-3">
@@ -179,6 +148,37 @@ function JourneyView({ journey }: { journey: Journey }) {
           );
         })}
       </ol>
+
+      {/* Save / Share / WhatsApp — bottom of the card, above the fare disclaimer */}
+      <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        {/* Feature 3 — Save this journey */}
+        <button
+          type="button"
+          onClick={handleToggleSave}
+          aria-pressed={alreadySaved}
+          className={cn('btn h-11 w-full justify-center px-3 text-sm sm:w-auto', alreadySaved ? 'btn-primary' : 'btn-secondary')}
+        >
+          <Star className={cn('h-4 w-4', alreadySaved && 'fill-current')} aria-hidden="true" />
+          {alreadySaved ? 'Saved' : 'Save'}
+        </button>
+        {/* Feature 7 — Send to friend */}
+        <button type="button" onClick={handleShare} className="btn btn-secondary h-11 w-full justify-center px-3 text-sm sm:w-auto">
+          {copied ? (
+            <Check className="h-4 w-4 text-operational" aria-hidden="true" />
+          ) : (
+            <Share2 className="h-4 w-4" aria-hidden="true" />
+          )}
+          {copied ? 'Copied!' : 'Share'}
+        </button>
+        <button
+          type="button"
+          onClick={handleShareWhatsApp}
+          className="btn btn-secondary h-11 w-full justify-center px-3 text-sm sm:w-auto"
+          aria-label="Send this journey to a friend on WhatsApp"
+        >
+          WhatsApp
+        </button>
+      </div>
 
       <p className="mt-4 border-t border-app pt-3 text-xs text-muted">{fare.disclaimer}</p>
     </section>
