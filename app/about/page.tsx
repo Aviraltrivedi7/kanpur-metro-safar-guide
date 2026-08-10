@@ -192,15 +192,6 @@ export default function AboutPage() {
                 fares, and service updates, please verify through UPMRC&apos;s official channels.
               </p>
             </div>
-            <a
-              href="https://www.upmrc.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-metro-blue hover:underline"
-            >
-              Visit UPMRC official website
-              <MoveRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </a>
           </div>
         </div>
       </section>
