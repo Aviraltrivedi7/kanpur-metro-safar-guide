@@ -1,0 +1,278 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------
+   Design tokens — Kanpur Metro Safar Guide 2.0
+   Spec: colors, typography, 8px spacing rhythm, radii 8/12/16,
+         150/250ms transitions, focus-visible, reduced motion.
+   --------------------------------------------------------------- */
+
+:root {
+  --color-navy: #0f172a;
+
+  /* RGB channels — used by Tailwind color opacity modifiers (e.g. bg-metro-blue/10) */
+  --rgb-metro-blue: 29 78 216;
+  --rgb-metro-light: 59 130 246;
+  --rgb-accent: 245 158 11;
+  --rgb-card: 255 255 255;
+  --rgb-ink: 15 23 42;
+  --rgb-muted: 100 116 139;
+  --rgb-surface: 248 250 252;
+  --rgb-navy: 15 23 42;
+  --rgb-operational: 4 120 87;
+  --rgb-delayed: 245 158 11;
+  --rgb-disruption: 239 68 68;
+  --rgb-upcoming: 100 116 139;
+
+  --color-metro-blue: #1d4ed8;
+  --color-metro-light: #3b82f6;
+  --color-accent: #f59e0b;
+
+  --color-surface: #f8fafc;
+  --color-card: #ffffff;
+  --color-ink: #0f172a; /* primary text */
+  --color-muted: #64748b;
+  --color-border: #e2e8f0;
+
+  --color-operational: #047857; /* emerald-700 — AA on white: 5.48:1 */
+  --color-delayed: #f59e0b;
+  --color-disruption: #ef4444;
+  --color-upcoming: #64748b; /* slate-500 — AA on white: 4.76:1 */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-elevated: 0 4px 12px rgba(15, 23, 42, 0.12);
+
+  --transition-fast: 150ms ease;
+  --transition-medium: 250ms ease;
+}
+
+.dark {
+  --rgb-card: 17 26 46;
+  --rgb-ink: 241 245 249;
+  --rgb-muted: 148 163 184;
+  --rgb-surface: 11 18 32;
+
+  /* status colors are brightened in dark mode to keep >=4.5:1 text contrast on dark surfaces */
+  --rgb-operational: 52 211 153; /* emerald-400 — 8.6:1 on dark card */
+  --rgb-upcoming: 148 163 184; /* slate-400 — 6.8:1 on dark card */
+
+  --color-surface: #0b1220;
+  --color-card: #111a2e;
+  --color-ink: #f1f5f9;
+  --color-muted: #94a3b8;
+  --color-border: #233049;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------------------------------------------------------------
+   Base styles
+   --------------------------------------------------------------- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-medium), color var(--transition-medium);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-poppins), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  color: var(--color-ink);
+}
+
+/* Accessible focus ring, always visible on keyboard nav */
+:focus-visible {
+  outline: 2px solid var(--color-metro-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Component layer
+   --------------------------------------------------------------- */
+
+@layer components {
+  .container-page {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 80rem;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+
+  .card {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 9999px;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: background-color var(--transition-fast), color var(--transition-fast),
+      border-color var(--transition-fast), transform var(--transition-fast);
+    min-height: 44px; /* accessibility touch target */
+    padding: 0.625rem 1.125rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background-color: var(--color-metro-blue);
+    color: #ffffff;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-metro-light);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  .btn-secondary {
+    background-color: var(--color-card);
+    color: var(--color-ink);
+    border: 1px solid var(--color-border);
+  }
+  .btn-secondary:hover {
+    background-color: var(--color-surface);
+  }
+
+  .input {
+    width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-card);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    min-height: 44px;
+  }
+  .input:focus {
+    border-color: var(--color-metro-blue);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+  }
+  .input::placeholder {
+    color: var(--color-muted);
+  }
+
+  .section-heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  @media (min-width: 768px) {
+    .section-heading {
+      font-size: 1.875rem;
+    }
+  }
+
+  .section-subheading {
+    color: var(--color-muted);
+    margin-top: 0.5rem;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Utilities
+   --------------------------------------------------------------- */
+
+@layer utilities {
+  .text-muted {
+    color: var(--color-muted);
+  }
+  .bg-card {
+    background-color: var(--color-card);
+  }
+  .border-app {
+    border-color: var(--color-border);
+  }
+  .bg-app {
+    background-color: var(--color-border);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Skip navigation link */
+.skip-nav {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-nav:focus {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-metro-blue);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+}
