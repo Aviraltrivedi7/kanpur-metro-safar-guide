@@ -5,16 +5,15 @@ interface LogoIconProps {
 /**
  * Kanpur Metro Safar Guide — official logo.
  * The user-provided brand mark (train + Kanpur skyline + "KANPUR METRO SAFAR GUIDE").
- * Used in the navbar wordmark and any branding spot. aria-hidden in navbar.
+ * MUST render the full image without cropping: object-contain keeps the whole
+ * badge visible inside whatever box the parent gives it.
  */
 export function LogoIcon({ className }: LogoIconProps) {
   return (
     <img
       src="/logo.png"
       alt="Kanpur Metro Safar Guide official logo"
-      width={32}
-      height={32}
-      className={className ?? 'h-8 w-8 rounded-md object-cover'}
+      className={className ?? 'h-10 w-auto object-contain'}
     />
   );
 }

@@ -30,7 +30,6 @@ export const metadata: Metadata = {
   description: SITE_TAGLINE,
   icons: {
     icon: '/logo.png',
-    apple: '/logo.png',
   },
   openGraph: {
     type: 'website',

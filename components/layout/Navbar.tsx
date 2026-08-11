@@ -40,10 +40,10 @@ export function Navbar() {
           aria-label="Kanpur Metro Safar Guide home"
         >
           <span
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-metro-blue text-white"
+            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md"
             aria-hidden="true"
           >
-            <LogoIcon className="h-5 w-5" />
+            <LogoIcon className="h-full w-full object-contain" />
           </span>
           <span className="leading-tight">
             <span className="block text-[13px] font-bold tracking-wide">{t('wordmark.line1')}</span>
