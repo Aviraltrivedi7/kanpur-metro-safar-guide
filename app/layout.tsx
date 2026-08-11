@@ -10,6 +10,7 @@ import { TravelMode } from '@/components/travel/TravelMode';
 import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
 import { SplashScreen } from '@/components/SplashScreen';
+import { StartupShell } from '@/components/splash/startupSplash';
 import { SITE_NAME, SITE_TAGLINE, UPMRC_DISCLAIMER, absoluteUrl } from '@/lib/site';
 import './globals.css';
 
@@ -59,24 +60,29 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
       <body className="min-h-screen flex flex-col">
-        <ThemeProvider>
-          <LanguageProvider>
-            <a href="#main-content" className="skip-nav">
-              Skip to main content
-            </a>
-            <Navbar />
-            <SplashScreen>
+        {/* HTML startup shell — the splash overlay exists from the very
+            FIRST paint (before React hydrates). The whole app sits under
+            #km-app-root (visibility:hidden) so nothing can flash through. */}
+        <StartupShell />
+        <SplashScreen />
+        <div id="km-app-root" className="flex min-h-screen flex-1 flex-col">
+          <ThemeProvider>
+            <LanguageProvider>
+              <a href="#main-content" className="skip-nav">
+                Skip to main content
+              </a>
+              <Navbar />
               <main id="main-content" className="flex-1">
                 {children}
               </main>
-            </SplashScreen>
-            <Footer />
-            <MobileBottomNav />
-            <TravelMode />
-            <InstallPrompt />
-            <ServiceWorkerRegistration />
-          </LanguageProvider>
-        </ThemeProvider>
+              <Footer />
+              <MobileBottomNav />
+              <TravelMode />
+              <InstallPrompt />
+              <ServiceWorkerRegistration />
+            </LanguageProvider>
+          </ThemeProvider>
+        </div>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

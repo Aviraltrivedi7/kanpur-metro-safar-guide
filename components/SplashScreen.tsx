@@ -1,133 +1,98 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { MetroLineAnim } from './MetroLineAnim';
-import { useSplashLogic } from '@/hooks/useSplashLogic';
+import { useEffect } from 'react';
 
-interface Props {
-  children: React.ReactNode;
-}
+const SESSION_KEY = 'km_splash_shown';
+const SPLASH_ID = 'km-splash';
+const MIN_DURATION_MS = 2200;
+const REDUCED_MIN_MS = 400;
+const REMOVAL_TIMEOUT_MS = 6000;
 
 /**
- * Startup splash — overlay on top of the app.
+ * Startup-splash controller.
  *
- * CRITICAL: children are ALWAYS rendered (splash is a fixed overlay, never a gate).
- * If JS is disabled, the splash simply never appears — user sees the site.
- * Never shown on internal SPA navigation or repeat visits in the same tab session.
+ * The splash itself is the server-rendered HTML startup shell (#km-splash),
+ * which is on screen from the very first paint — BEFORE React loads. This
+ * component NEVER renders its own splash. It only controls WHEN the shell
+ * exits:
+ *
+ *   hide = minimum duration elapsed  AND  app is ready (first painted frame)
+ *
+ * Plus a 4s inline-script failsafe (in the shell) and a 6s React-side
+ * removal failsafe. On repeat loads within the same tab session the shell
+ * is removed pre-hydration by the inline script, so users only see the
+ * splash on a fresh load / new tab / hard refresh — never on SPA navigation.
  */
-export function SplashScreen({ children }: Props) {
-  const { shouldShow, isFirstSession, prefersReducedMotion, markAppReady } = useSplashLogic();
-  const readyRef = useRef(false);
-
-  // Mark app ready after first paint (two RAFs = after layout+paint of children).
+export function SplashScreen() {
   useEffect(() => {
-    if (readyRef.current) return;
-    readyRef.current = true;
+    let cancelled = false;
+
+    function removeSplash(): void {
+      const s = document.getElementById(SPLASH_ID);
+      if (s && s.parentNode) s.parentNode.removeChild(s);
+    }
+
+    function finish(): void {
+      if (cancelled) return;
+      if (typeof window.__kmAppReady === 'function') {
+        window.__kmAppReady();
+      } else {
+        removeSplash();
+      }
+    }
+
+    // Already shown this session? Ensure shell is gone immediately.
+    try {
+      if (window.sessionStorage.getItem(SESSION_KEY)) {
+        removeSplash();
+        return undefined;
+      }
+    } catch {
+      /* storage unavailable — continue */
+    }
+
+    if (!document.getElementById(SPLASH_ID)) return undefined;
+
+    const reduced =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const minMs = reduced ? REDUCED_MIN_MS : MIN_DURATION_MS;
+
+    let appReady = false;
+    let minDone = false;
     let inner = 0;
+    let minTimer = 0;
+    let removalTimer = 0;
+
+    function tryHide(): void {
+      if (appReady && minDone) finish();
+    }
+
+    // App scope is the whole document body (everything between the shell and
+    // the JSON-LD script). Double-RAF = after first real painted frame.
     const outer = requestAnimationFrame(() => {
       inner = requestAnimationFrame(() => {
-        markAppReady();
+        appReady = true;
+        tryHide();
       });
     });
+
+    minTimer = window.setTimeout(() => {
+      minDone = true;
+      tryHide();
+    }, minMs);
+
+    // React-side removal failsafe (inline script has its own 4s failsafe too).
+    removalTimer = window.setTimeout(removeSplash, REMOVAL_TIMEOUT_MS);
+
     return () => {
+      cancelled = true;
       cancelAnimationFrame(outer);
       cancelAnimationFrame(inner);
+      window.clearTimeout(minTimer);
+      window.clearTimeout(removalTimer);
     };
-  }, [markAppReady]);
+  }, []);
 
-  // Not a fresh session-load → render children directly, no splash at all.
-  if (!isFirstSession) {
-    return <>{children}</>;
-  }
-
-  return (
-    <>
-      {/* ─── SPLASH OVERLAY ─── */}
-      <AnimatePresence>
-        {shouldShow && (
-          <motion.div
-            key="splash"
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0F172A] select-none"
-            initial={{ opacity: 1 }}
-            exit={{
-              opacity: 0,
-              transition: { duration: prefersReducedMotion ? 0.2 : 0.4, ease: 'easeInOut' },
-            }}
-            role="status"
-            aria-label="Kanpur Metro Safar Guide loading"
-            aria-busy="true"
-          >
-            <div className="flex w-full max-w-sm flex-col items-center gap-6 px-8">
-              {/* ── Metro Line Animation ── */}
-              <div className="w-full">
-                <MetroLineAnim reducedMotion={prefersReducedMotion} />
-              </div>
-
-              {/* ── Brand Text ── */}
-              <div className="space-y-1 text-center">
-                <motion.p
-                  className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-400"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: prefersReducedMotion ? 0.15 : 0.35,
-                    delay: prefersReducedMotion ? 0 : 1.25,
-                    ease: 'easeOut',
-                  }}
-                >
-                  KANPUR METRO
-                </motion.p>
-
-                {/* div-as-heading: avoids a duplicate h1 in the DOM alongside the page's h1 */}
-                <motion.div
-                  role="heading"
-                  aria-level={1}
-                  className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: prefersReducedMotion ? 0.15 : 0.4,
-                    delay: prefersReducedMotion ? 0 : 1.45,
-                    ease: 'easeOut',
-                  }}
-                >
-                  Safar Guide
-                </motion.div>
-
-                <motion.p
-                  className="mt-2 text-sm font-medium tracking-wide text-slate-400"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    duration: prefersReducedMotion ? 0.15 : 0.35,
-                    delay: prefersReducedMotion ? 0.1 : 1.75,
-                    ease: 'easeOut',
-                  }}
-                >
-                  Plan. Travel. Explore.
-                </motion.p>
-              </div>
-
-              {/* ── Subtle creator credit ── */}
-              <motion.p
-                className="absolute bottom-8 text-[11px] text-slate-600"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: prefersReducedMotion ? 0.2 : 1.9, duration: 0.3 }}
-              >
-                An independent project by Aviral Trivedi
-              </motion.p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ─── ACTUAL APP CONTENT — always rendered to the DOM ─── */}
-      {/* SSR/bots/no-JS users see the site; overlay just sits on top while visible. */}
-      <div aria-hidden={shouldShow} style={{ pointerEvents: shouldShow ? 'none' : 'auto' }}>
-        {children}
-      </div>
-    </>
-  );
+  return null;
 }
