@@ -9,6 +9,7 @@ import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 import { TravelMode } from '@/components/travel/TravelMode';
 import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { SplashScreen } from '@/components/SplashScreen';
 import { SITE_NAME, SITE_TAGLINE, UPMRC_DISCLAIMER, absoluteUrl } from '@/lib/site';
 import './globals.css';
 
@@ -64,9 +65,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               Skip to main content
             </a>
             <Navbar />
-            <main id="main-content" className="flex-1">
-              {children}
-            </main>
+            <SplashScreen>
+              <main id="main-content" className="flex-1">
+                {children}
+              </main>
+            </SplashScreen>
             <Footer />
             <MobileBottomNav />
             <TravelMode />
