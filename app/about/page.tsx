@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Clock,
   Compass,
@@ -107,12 +108,15 @@ export default function AboutPage() {
       {/* 2 — CREATOR */}
       <section className="mx-auto mt-12 max-w-2xl" aria-labelledby="creator-heading">
         <div className="card flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:p-6">
-          <div
-            className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-metro-blue text-2xl font-bold text-white"
-            aria-label="Aviral Trivedi"
-          >
-            AT
-          </div>
+          {/* Creator photo (real image in /public). */}
+          <Image
+            src="/aviral-trivedi.jpg"
+            alt="Aviral Trivedi"
+            width={80}
+            height={80}
+            className="h-20 w-20 shrink-0 rounded-full border-2 border-metro-blue/20 object-cover"
+            priority
+          />
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">
               Meet the Creator
