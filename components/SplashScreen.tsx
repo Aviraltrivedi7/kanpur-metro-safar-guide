@@ -62,7 +62,13 @@ export function SplashScreen() {
 
     el.innerHTML =
       '<div class="km-s-inner">' +
-      '<img class="km-s-logo" src="/logo.png" alt="Kanpur Metro Safar Guide logo" width="96" height="96" />' +
+      '<div class="km-s-logo-glow">' +
+      '<img class="km-s-logo" src="/logo.png" alt="Kanpur Metro Safar Guide logo" width="168" height="168" />' +
+      '</div>' +
+      '<div class="km-s-lockup">' +
+      '<p class="km-s-kicker">KANPUR METRO</p>' +
+      '<p class="km-s-title">Safar Guide</p>' +
+      '</div>' +
       '<svg class="km-s-svg" viewBox="0 0 400 40" aria-hidden="true" focusable="false">' +
       '<line class="km-s-line" x1="0" y1="20" x2="400" y2="20"/>' +
       dots +
@@ -72,8 +78,6 @@ export function SplashScreen() {
       '<polygon points="12,20 16,17 16,23" fill="#F59E0B"/>' +
       '</g>' +
       '</svg>' +
-      '<p class="km-s-kicker">KANPUR METRO</p>' +
-      '<p class="km-s-title">Safar Guide</p>' +
       '<p class="km-s-tagline">Plan. Travel. Explore.</p>' +
       '</div>' +
       '<p class="km-s-credit">An independent project by Aviral Trivedi</p>';

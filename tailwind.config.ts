@@ -43,6 +43,7 @@ const config: Config = {
       boxShadow: {
         card: '0 1px 3px rgba(15, 23, 42, 0.08)',
         elevated: '0 4px 12px rgba(15, 23, 42, 0.12)',
+        'metro-glow': '0 0 20px rgba(var(--rgb-metro-blue), 0.5), 0 4px 12px rgba(0, 0, 0, 0.15)',
       },
       transitionDuration: { micro: '150', expand: '250' },
       keyframes: {

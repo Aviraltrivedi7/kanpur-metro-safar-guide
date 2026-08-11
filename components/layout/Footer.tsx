@@ -8,9 +8,9 @@ export function Footer() {
       <div className="container-page py-12">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               <span
-                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md"
+                className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl ring-2 ring-metro-blue/30 shadow-lg"
                 aria-hidden="true"
               >
                 <LogoIcon className="h-full w-full object-contain" />
