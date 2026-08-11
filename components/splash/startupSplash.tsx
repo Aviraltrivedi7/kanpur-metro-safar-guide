@@ -1,14 +1,23 @@
 /**
- * components/splash/startupSplash.ts
+ * components/splash/startupSplash.tsx
  *
  * HTML startup shell — the splash markup that is SERVER-RENDERED directly
  * into the document (before React hydrates). This is what guarantees the
  * splash is the very FIRST paint: no homepage/navbar/hero flash is possible
- * because the app content sits under `#km-app-root` (visibility:hidden) until
- * React marks the app ready and removes the splash.
+ * because the app content sits under `#km-app-root` (visibility:hidden,
+ * gated behind [data-splash-active]) until the startup script reveals it.
  *
  * There is exactly ONE splash: this HTML shell. React (SplashScreen) only
  * controls its removal/timing — it never renders a second splash.
+ *
+ * Visibility mechanism (permanent, hydration-safe):
+ *   - CSS rule ONLY applies: html[data-splash-active] #km-app-root { visibility:hidden }
+ *   - The pre-body inline script sets data-splash-active + .km-splash-on AT
+ *     PARSE TIME only when the splash will actually show (already-shown
+ *     sessions get NO hiding — zero flash, zero white screen).
+ *   - The post-app script marks shown, reveals via class (React never touches
+ *     class attributes, so hydration can never undo the reveal), and removes
+ *     the splash. On SPA navigations the shell isn't in the DOM — nothing runs.
  */
 
 export const SPLASH_ID = 'km-splash';
@@ -26,10 +35,20 @@ const STATIONS: ReadonlyArray<{ cx: number; r: number }> = [
 ];
 
 /**
- * The full splash overlay HTML. Pure CSS animations (globals.css) so it
- * animates from first paint with ZERO JavaScript.
- * Server-side: always included. Client logic removes it for repeat loads
- * (via the hidden-inline script before hydration / SplashScreen after).
+ * Inline PRE script — runs while <head> is being parsed, BEFORE the body
+ * (and therefore before #km-app-root) exists. Decides whether this page
+ * view shows the splash at all:
+ *   - Repeat load this session → do nothing → CSS never hides the app →
+ *     pages (and SPA navigations) show content instantly, zero white screen.
+ *   - Fresh load / new tab / hard refresh → mark documentElement so CSS
+ *     hides the app root from the FIRST paint.
+ */
+export const STARTUP_PRE_SCRIPT = `(function(){try{if(!window.sessionStorage.getItem('${SPLASH_SESSION_KEY}')){var d=document.documentElement;d.setAttribute('data-splash-active','');d.classList.add('km-splash-on');}}catch(e){}})();`;
+
+/**
+ * The splash overlay HTML. Pure CSS animations (globals.css) so it animates
+ * from first paint with ZERO JavaScript. Server-side: always included; the
+ * post-body script removes it immediately for repeat loads.
  */
 export function StartupSplashMarkup() {
   const dots = STATIONS.map(
@@ -58,24 +77,36 @@ export function StartupSplashMarkup() {
   );
 }
 
-/** Pre-hydration script: hides the splash instantly on repeat loads in the
- * same tab session (before first paint), sets up the 4s JS-failure failsafe,
- * and removes the splash + reveals the app when React signals completion. */
-export const STARTUP_SCRIPT = `(function(){var S='${SPLASH_SESSION_KEY}';var el=document.getElementById('${SPLASH_ID}');if(!el)return;var root=document.getElementById('${APP_ROOT_ID}');var done=false;try{if(window.sessionStorage.getItem(S)){el.parentNode.removeChild(el);if(root)root.style.visibility='visible';done=true;}}catch(e){}if(done)return;window.__kmAppReady=function(){if(done)return;done=true;try{window.sessionStorage.setItem(S,'1');}catch(e){}var s=document.getElementById('${SPLASH_ID}');if(s){s.classList.add('km-splash-done');setTimeout(function(){if(s.parentNode)s.parentNode.removeChild(s);},700);}var r=document.getElementById('${APP_ROOT_ID}');if(r)r.style.visibility='visible';};setTimeout(function(){window.__kmAppReady();},4000);})();`;
+/**
+ * Inline POST script — rendered right AFTER #km-app-root. Handles:
+ *   - already-shown sessions: removes the splash immediately
+ *   - fresh loads: marks sessionStorage NOW (so any same-tab reload or
+ *     navigate-away-and-back skips the splash even if the user clicked
+ *     during the splash), defines the failsafe __kmAppReady + 4s timeout.
+ *     React (SplashScreen) will call __kmAppReady when the app is ready
+ *     AND the minimum animation duration has elapsed.
+ */
+export const STARTUP_POST_SCRIPT = `(function(){var S='${SPLASH_SESSION_KEY}';var el=document.getElementById('${SPLASH_ID}');var d=document.documentElement;var shown=false;try{shown=!!window.sessionStorage.getItem(S);}catch(e){}if(shown||!el){if(el&&el.parentNode)el.parentNode.removeChild(el);return;}function finish(){var s=document.getElementById('${SPLASH_ID}');d.removeAttribute('data-splash-active');d.classList.remove('km-splash-on');if(s){s.classList.add('km-splash-done');setTimeout(function(){if(s.parentNode)s.parentNode.removeChild(s);},700);}}if(typeof window.__kmAppReady!=='function'){var done=false;try{window.sessionStorage.setItem(S,'1');}catch(e){}window.__kmAppReady=function(){if(done)return;done=true;finish();};setTimeout(function(){window.__kmAppReady();},4000);}})();`;
 
-/** Removes the splash when JavaScript is disabled entirely. */
+/** Removes the splash + reveals the app when JavaScript is disabled entirely. */
 export const NOSCRIPT_STYLE = `<noscript><style>#${SPLASH_ID}{display:none!important}#${APP_ROOT_ID}{visibility:visible!important}</style></noscript>`;
 
-/**
- * Server component that injects the startup splash + its control script.
- * Rendered as the FIRST child of <body> so it is painted before anything else.
- */
+/** Server component: head-area pre-body decision script. */
+export function StartupHead() {
+  return <script dangerouslySetInnerHTML={{ __html: STARTUP_PRE_SCRIPT }} />;
+}
+
+/** Server component: the splash shell itself, first child of <body>. */
 export function StartupShell() {
   return (
     <>
       <div dangerouslySetInnerHTML={{ __html: StartupSplashMarkup() }} />
-      <script dangerouslySetInnerHTML={{ __html: STARTUP_SCRIPT }} />
       <div dangerouslySetInnerHTML={{ __html: NOSCRIPT_STYLE }} />
     </>
   );
+}
+
+/** Server component: rendered AFTER the app root; fixes parse-time races. */
+export function StartupTail() {
+  return <script dangerouslySetInnerHTML={{ __html: STARTUP_POST_SCRIPT }} />;
 }

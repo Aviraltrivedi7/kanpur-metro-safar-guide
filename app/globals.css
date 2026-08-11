@@ -317,10 +317,13 @@ h1, h2, h3, h4 {
 /* ═══════════════════════════════════════════════════════════════════
    STARTUP SPLASH — the FIRST thing painted (server-rendered HTML shell).
    Pure CSS animations so it animates before any JavaScript loads.
-   The app content (#km-app-root) is visibility:hidden from first paint;
-   the inline startup script flips it to visible when the splash exits.
+   The app content (#km-app-root) is hidden ONLY while the document carries
+   [data-splash-active] (set at parse time by the inline head script for
+   fresh loads; never set for repeat loads / SPA navs). The startup script
+   removes the attribute when the splash exits — React never touches class
+   or dataset attributes, so hydration can never re-hide the app.
    ═══════════════════════════════════════════════════════════════════ */
-#km-app-root {
+html[data-splash-active] #km-app-root {
   visibility: hidden;
 }
 

@@ -10,7 +10,7 @@ import { TravelMode } from '@/components/travel/TravelMode';
 import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
 import { SplashScreen } from '@/components/SplashScreen';
-import { StartupShell } from '@/components/splash/startupSplash';
+import { StartupHead, StartupShell, StartupTail } from '@/components/splash/startupSplash';
 import { SITE_NAME, SITE_TAGLINE, UPMRC_DISCLAIMER, absoluteUrl } from '@/lib/site';
 import './globals.css';
 
@@ -59,10 +59,16 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
+      <head>
+        {/* Decides BEFORE the body parses whether this load shows the splash.
+            Repeat loads / SPA navigations: no data-splash-active → app is
+            never hidden (permanent white-screen fix). */}
+        <StartupHead />
+      </head>
       <body className="min-h-screen flex flex-col">
-        {/* HTML startup shell — the splash overlay exists from the very
-            FIRST paint (before React hydrates). The whole app sits under
-            #km-app-root (visibility:hidden) so nothing can flash through. */}
+        {/* HTML startup shell — the splash overlay is painted before React
+            hydrates. The whole app sits under #km-app-root which the CSS
+            only hides while html[data-splash-active] is set. */}
         <StartupShell />
         <SplashScreen />
         <div id="km-app-root" className="flex min-h-screen flex-1 flex-col">
@@ -83,6 +89,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </LanguageProvider>
           </ThemeProvider>
         </div>
+        <StartupTail />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
