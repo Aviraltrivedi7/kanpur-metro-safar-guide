@@ -10,7 +10,6 @@ import { TravelMode } from '@/components/travel/TravelMode';
 import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
 import { SplashScreen } from '@/components/SplashScreen';
-import { StartupHead, StartupShell, StartupTail } from '@/components/splash/startupSplash';
 import { SITE_NAME, SITE_TAGLINE, UPMRC_DISCLAIMER, absoluteUrl } from '@/lib/site';
 import './globals.css';
 
@@ -30,18 +29,15 @@ export const metadata: Metadata = {
   },
   description: SITE_TAGLINE,
   icons: {
-    icon: [
-      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-    ],
-    apple: '/icons/icon-192.png',
+    icon: '/logo.png',
+    apple: '/logo.png',
   },
   openGraph: {
     type: 'website',
     siteName: SITE_NAME,
     title: SITE_NAME,
     description: SITE_TAGLINE,
-    images: [{ url: '/icons/icon-512.png', width: 512, height: 512, alt: `${SITE_NAME} logo` }],
+    images: [{ url: '/logo.png', width: 1024, height: 1024, alt: `${SITE_NAME} logo` }],
   },
 };
 
@@ -59,37 +55,29 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
-      <head>
-        {/* Decides BEFORE the body parses whether this load shows the splash.
-            Repeat loads / SPA navigations: no data-splash-active → app is
-            never hidden (permanent white-screen fix). */}
-        <StartupHead />
-      </head>
+      <head />
       <body className="min-h-screen flex flex-col">
-        {/* HTML startup shell — the splash overlay is painted before React
-            hydrates. The whole app sits under #km-app-root which the CSS
-            only hides while html[data-splash-active] is set. */}
-        <StartupShell />
+        {/* Client-side splash controller: shows the branded startup overlay
+            ONCE per device (localStorage), never on SPA navigation, and
+            removes itself after the animation. Nothing is hidden by CSS —
+            no white screen risk. */}
         <SplashScreen />
-        <div id="km-app-root" className="flex min-h-screen flex-1 flex-col">
-          <ThemeProvider>
-            <LanguageProvider>
-              <a href="#main-content" className="skip-nav">
-                Skip to main content
-              </a>
-              <Navbar />
-              <main id="main-content" className="flex-1">
-                {children}
-              </main>
-              <Footer />
-              <MobileBottomNav />
-              <TravelMode />
-              <InstallPrompt />
-              <ServiceWorkerRegistration />
-            </LanguageProvider>
-          </ThemeProvider>
-        </div>
-        <StartupTail />
+        <ThemeProvider>
+          <LanguageProvider>
+            <a href="#main-content" className="skip-nav">
+              Skip to main content
+            </a>
+            <Navbar />
+            <main id="main-content" className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <MobileBottomNav />
+            <TravelMode />
+            <InstallPrompt />
+            <ServiceWorkerRegistration />
+          </LanguageProvider>
+        </ThemeProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

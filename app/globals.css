@@ -315,18 +315,11 @@ h1, h2, h3, h4 {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   STARTUP SPLASH — the FIRST thing painted (server-rendered HTML shell).
-   Pure CSS animations so it animates before any JavaScript loads.
-   The app content (#km-app-root) is hidden ONLY while the document carries
-   [data-splash-active] (set at parse time by the inline head script for
-   fresh loads; never set for repeat loads / SPA navs). The startup script
-   removes the attribute when the splash exits — React never touches class
-   or dataset attributes, so hydration can never re-hide the app.
+   STARTUP SPLASH — client-generated once per device (localStorage).
+   NO CSS hides the app content; there is ZERO white-screen risk.
+   The splash element is created/mounted in JS by <SplashScreen/> and
+   removed after the animation (2.2s, or instantly on reduced motion).
    ═══════════════════════════════════════════════════════════════════ */
-html[data-splash-active] #km-app-root {
-  visibility: hidden;
-}
-
 #km-splash {
   position: fixed;
   inset: 0;
@@ -352,6 +345,16 @@ html[data-splash-active] #km-app-root {
   gap: 1.5rem;
   padding: 0 2rem;
   position: relative;
+}
+.km-s-logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
+  box-shadow:
+    0 0 40px rgba(29, 78, 216, 0.45),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  animation: km-s-logo-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
 }
 .km-s-svg {
   width: 100%;
@@ -417,6 +420,10 @@ html[data-splash-active] #km-app-root {
   animation: km-s-fade-in 0.3s ease-out 1.9s forwards;
 }
 
+@keyframes km-s-logo-pop {
+  from { opacity: 0; transform: scale(0.82); }
+  to   { opacity: 1; transform: scale(1); }
+}
 @keyframes km-s-line-draw {
   to { stroke-dashoffset: 0; }
 }
