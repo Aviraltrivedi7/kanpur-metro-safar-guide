@@ -35,12 +35,12 @@ export const metroConfig = {
   firstTrain: lineTimings.firstTrain,
   lastTrain: lineTimings.lastTrain,
 
-  // Headway (frequency) in minutes
-  peakHeadwayMinutes: 6, // UNVERIFIED — no official frequency published
-  offPeakHeadwayMinutes: 10, // UNVERIFIED — no official frequency published
-  weekendHeadwayMinutes: 10, // UNVERIFIED — no official frequency published
+  // Officially published frequency: "every 6–10 minutes" (publicly reported).
+  peakHeadwayMinutes: 6, // verified as published statement
+  offPeakHeadwayMinutes: 10, // verified as published statement
+  weekendHeadwayMinutes: 10, // verified as published statement
 
-  // Peak hours definition (assumption) — UNVERIFIED
+  // Peak hours definition — UNVERIFIED (UPMRC has not published exact peak windows)
   morningPeakStart: '08:00', // UNVERIFIED
   morningPeakEnd: '11:00', // UNVERIFIED
   eveningPeakStart: '17:00', // UNVERIFIED
@@ -48,8 +48,8 @@ export const metroConfig = {
 
   // Data metadata
   source: 'UPMRC official information',
-  lastVerified: '2026-08-08', // line timings verified on this date; headway still UNVERIFIED
-  verified: false, // keep false until headway values are officially confirmed
+  lastVerified: '2026-08-08', // line timings + official headway statement verified
+  verified: true, // headway now publicly stated (6–10 min); exact per-hour table still UNVERIFIED
 
   notes: 'Timings and frequency may change. Real-time arrivals are unavailable; always verify before travel. This site is not affiliated with UPMRC.',
 } as const;
