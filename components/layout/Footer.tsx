@@ -10,10 +10,12 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-3">
               <span
-                className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl ring-2 ring-metro-blue/30 shadow-lg"
+                className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-navy via-metro-blue to-navy p-[4px] shadow-card"
                 aria-hidden="true"
               >
-                <LogoIcon className="h-full w-full object-contain" />
+                <span className="flex h-full w-full items-center justify-center rounded-[8px] bg-white">
+                  <LogoIcon className="h-8 w-8" />
+                </span>
               </span>
               <div className="leading-tight">
                 <p className="text-sm font-bold">KANPUR METRO</p>

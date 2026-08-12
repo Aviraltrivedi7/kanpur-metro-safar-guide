@@ -40,10 +40,12 @@ export function Navbar() {
           aria-label="Kanpur Metro Safar Guide home"
         >
           <span
-            className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl ring-2 ring-metro-blue/30 transition-all duration-300 hover:scale-105 hover:ring-metro-blue/60 hover:shadow-metro-glow"
+            className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-navy via-metro-blue to-navy p-[3px] shadow-card transition-all duration-300 hover:scale-105 hover:shadow-metro-glow hover:ring-2 hover:ring-metro-blue/50"
             aria-hidden="true"
           >
-            <LogoIcon className="h-full w-full object-contain" />
+            <span className="flex h-full w-full items-center justify-center rounded-[9px] bg-white">
+              <LogoIcon className="h-6 w-6" />
+            </span>
           </span>
           <span className="leading-tight">
             <span className="block text-[13px] font-bold tracking-wide">{t('wordmark.line1')}</span>

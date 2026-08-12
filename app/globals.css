@@ -363,12 +363,10 @@ h1, h2, h3, h4 {
     km-s-float 4s ease-in-out 1s infinite;
 }
 .km-s-logo {
-  width: 160px;
-  height: auto;
-  max-height: 160px;
-  object-fit: contain;
+  width: 120px;
+  height: 120px;
   display: block;
-  filter: brightness(1.15) contrast(1.1) saturate(1.05);
+  filter: drop-shadow(0 0 18px rgba(96, 165, 250, 0.55)) drop-shadow(0 6px 18px rgba(0, 0, 0, 0.35));
 }
 .km-s-lockup {
   display: flex;

@@ -29,7 +29,10 @@ export const metadata: Metadata = {
   },
   description: SITE_TAGLINE,
   icons: {
-    icon: '/logo.png',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/logo.png', sizes: 'any' },
+    ],
   },
   openGraph: {
     type: 'website',
