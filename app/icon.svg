@@ -1,20 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
   <defs>
-    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="fb" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#60A5FA"/>
       <stop offset="100%" stop-color="#1D4ED8"/>
     </linearGradient>
-    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0">
+    <linearGradient id="fa" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#FBBF24"/>
       <stop offset="100%" stop-color="#F59E0B"/>
     </linearGradient>
   </defs>
-  <rect width="48" height="48" rx="8" fill="#0F172A"/>
-  <path d="M6 6 L6 30" stroke="url(#g1)" stroke-width="3.5" stroke-linecap="round"/>
-  <path d="M42 6 L42 30" stroke="url(#g1)" stroke-width="3.5" stroke-linecap="round"/>
-  <path d="M6 6 L24 24" stroke="url(#g1)" stroke-width="3.5" stroke-linecap="round"/>
-  <path d="M42 6 L24 24" stroke="url(#g1)" stroke-width="3.5" stroke-linecap="round"/>
-  <rect x="18" y="16" width="12" height="10" rx="2.2" fill="#1D4ED8"/>
-  <rect x="20" y="19" width="8" height="4" rx="1" fill="white" opacity="0.9"/>
-  <rect x="8" y="34" width="32" height="4" rx="2" fill="url(#g2)"/>
+  <!-- Dark tile background -->
+  <rect width="48" height="48" rx="10" fill="#0F172A"/>
+  <!-- Motion lines -->
+  <line x1="2" y1="15" x2="9" y2="15" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" opacity="0.35"/>
+  <line x1="4" y1="21" x2="11" y2="21" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="2" y1="27" x2="9" y2="27" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" opacity="0.35"/>
+  <!-- Train body -->
+  <rect x="12" y="8" width="26" height="24" rx="5" fill="url(#fb)"/>
+  <!-- Front nose -->
+  <path d="M38 8 Q44 8 44 20 Q44 32 38 32" fill="url(#fb)"/>
+  <!-- Windows -->
+  <rect x="15" y="12" width="6" height="7" rx="1.5" fill="white" opacity="0.92"/>
+  <rect x="23" y="12" width="6" height="7" rx="1.5" fill="white" opacity="0.92"/>
+  <rect x="31" y="12" width="6" height="7" rx="1.5" fill="white" opacity="0.92"/>
+  <!-- Door seams -->
+  <line x1="22" y1="8" x2="22" y2="32" stroke="white" stroke-width="0.8" opacity="0.12"/>
+  <line x1="30" y1="8" x2="30" y2="32" stroke="white" stroke-width="0.8" opacity="0.12"/>
+  <!-- Amber speed stripe -->
+  <rect x="12" y="28" width="26" height="3.5" rx="1.5" fill="url(#fa)"/>
+  <!-- Rail -->
+  <rect x="3" y="38" width="42" height="2.5" rx="1.25" fill="url(#fa)" opacity="0.7"/>
+  <!-- Track ties -->
+  <rect x="8" y="41.5" width="3" height="2" rx="1" fill="#F59E0B" opacity="0.45"/>
+  <rect x="18" y="41.5" width="3" height="2" rx="1" fill="#F59E0B" opacity="0.45"/>
+  <rect x="28" y="41.5" width="3" height="2" rx="1" fill="#F59E0B" opacity="0.45"/>
+  <rect x="38" y="41.5" width="3" height="2" rx="1" fill="#F59E0B" opacity="0.45"/>
 </svg>

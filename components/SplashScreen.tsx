@@ -63,28 +63,27 @@ export function SplashScreen() {
     el.innerHTML =
       '<div class="km-s-inner">' +
       '<div class="km-s-logo-glow">' +
-      '<svg class="km-s-logo" viewBox="0 0 48 48" fill="none" width="168" height="168" role="img" aria-label="Kanpur Metro Safar Guide logo">' +
+      '<svg class="km-s-logo" viewBox="0 0 48 48" fill="none" width="144" height="144" role="img" aria-label="Kanpur Metro Safar Guide logo">' +
       '<defs>' +
-      '<linearGradient id="km-splash-grad-blue" x1="0" y1="0" x2="1" y2="1">' +
-      '<stop offset="0%" stop-color="#60A5FA"/>' +
-      '<stop offset="100%" stop-color="#1D4ED8"/>' +
-      '</linearGradient>' +
-      '<linearGradient id="km-splash-grad-amber" x1="0" y1="0" x2="1" y2="0">' +
-      '<stop offset="0%" stop-color="#FBBF24"/>' +
-      '<stop offset="100%" stop-color="#F59E0B"/>' +
-      '</linearGradient>' +
+      '<linearGradient id="sp-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#1D4ED8"/></linearGradient>' +
+      '<linearGradient id="sp-a" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FBBF24"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>' +
       '</defs>' +
-      '<path d="M6 6 L6 30" stroke="url(#km-splash-grad-blue)" stroke-width="3.5" stroke-linecap="round"/>' +
-      '<path d="M42 6 L42 30" stroke="url(#km-splash-grad-blue)" stroke-width="3.5" stroke-linecap="round"/>' +
-      '<path d="M6 6 L24 24" stroke="url(#km-splash-grad-blue)" stroke-width="3.5" stroke-linecap="round"/>' +
-      '<path d="M42 6 L24 24" stroke="url(#km-splash-grad-blue)" stroke-width="3.5" stroke-linecap="round"/>' +
-      '<rect x="18" y="16" width="12" height="10" rx="2.2" fill="#1D4ED8"/>' +
-      '<rect x="20" y="19" width="8" height="4" rx="1" fill="#ffffff" opacity="0.9"/>' +
-      '<rect x="21.5" y="19.5" width="5" height="3" rx="0.5" fill="#0F172A" opacity="0.8"/>' +
-      '<rect x="8" y="34" width="32" height="4" rx="2" fill="url(#km-splash-grad-amber)"/>' +
-      '<rect x="12" y="40" width="6" height="2.5" rx="1.25" fill="url(#km-splash-grad-amber)" opacity="0.6"/>' +
-      '<rect x="22" y="40" width="6" height="2.5" rx="1.25" fill="url(#km-splash-grad-amber)" opacity="0.6"/>' +
-      '<rect x="32" y="40" width="4" height="2.5" rx="1.25" fill="url(#km-splash-grad-amber)" opacity="0.6"/>' +
+      '<line x1="2" y1="15" x2="9" y2="15" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" opacity="0.35"/>' +
+      '<line x1="4" y1="21" x2="11" y2="21" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>' +
+      '<line x1="2" y1="27" x2="9" y2="27" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" opacity="0.35"/>' +
+      '<rect x="12" y="8" width="26" height="24" rx="5" fill="url(#sp-b)"/>' +
+      '<path d="M38 8 Q44 8 44 20 Q44 32 38 32" fill="url(#sp-b)"/>' +
+      '<rect x="15" y="12" width="6" height="7" rx="1.5" fill="white" opacity="0.92"/>' +
+      '<rect x="23" y="12" width="6" height="7" rx="1.5" fill="white" opacity="0.92"/>' +
+      '<rect x="31" y="12" width="6" height="7" rx="1.5" fill="white" opacity="0.92"/>' +
+      '<line x1="22" y1="8" x2="22" y2="32" stroke="white" stroke-width="0.8" opacity="0.12"/>' +
+      '<line x1="30" y1="8" x2="30" y2="32" stroke="white" stroke-width="0.8" opacity="0.12"/>' +
+      '<rect x="12" y="28" width="26" height="3.5" rx="1.5" fill="url(#sp-a)"/>' +
+      '<rect x="3" y="38" width="42" height="2.5" rx="1.25" fill="url(#sp-a)" opacity="0.7"/>' +
+      '<rect x="8" y="41.5" width="3" height="2" rx="1" fill="#F59E0B" opacity="0.45"/>' +
+      '<rect x="18" y="41.5" width="3" height="2" rx="1" fill="#F59E0B" opacity="0.45"/>' +
+      '<rect x="28" y="41.5" width="3" height="2" rx="1" fill="#F59E0B" opacity="0.45"/>' +
+      '<rect x="38" y="41.5" width="3" height="2" rx="1" fill="#F59E0B" opacity="0.45"/>' +
       '</svg>' +
       '</div>' +
       '<div class="km-s-lockup">' +
