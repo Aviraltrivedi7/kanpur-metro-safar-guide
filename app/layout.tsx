@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description: SITE_TAGLINE,
   icons: {
     icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon.png', sizes: '64x64', type: 'image/png' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
   },
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: SITE_NAME,
     description: SITE_TAGLINE,
-    images: [{ url: '/logo.png', width: 1024, height: 1024, alt: `${SITE_NAME} logo` }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: `${SITE_NAME} logo` }],
   },
 };
 

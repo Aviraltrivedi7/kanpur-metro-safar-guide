@@ -1,44 +1,56 @@
 /**
- * PWA icon generator — npx tsx scripts/generate-icons.ts
+ * Icon generator — npx tsx scripts/generate-icons.ts
  *
- * Renders app/icon.svg (the dark-tile favicon mark) to the PNG sizes the
- * manifest references. Maskable variants redraw the mark at 62.5% inside a
- * full-bleed dark tile so Android's circular safe zone never crops it.
+ * Source of truth: public/logo.png (the official emblem image, unmodified).
+ * Emits:
+ *  - public/icons/logo-256.png / logo-512.png  (UI <img> sources)
+ *  - app/icon.png                            (Next.js auto favicon)
+ *  - public/icons/icon-192.png / icon-512.png (PWA, plain — emblem as-is)
+ *  - public/icons/icon-192-maskable.png / icon-512-maskable.png
+ *    (mark at 72% centered on a full-bleed #0F172A tile — Android safe zone)
  */
 import sharp from 'sharp';
-import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 const ROOT = path.resolve(__dirname, '..');
-const SVG_PATH = path.join(ROOT, 'app', 'icon.svg');
-const OUT_DIR = path.join(ROOT, 'public', 'icons');
+const SRC = path.join(ROOT, 'public', 'logo.png');
+const ICONS = path.join(ROOT, 'public', 'icons');
 
-const TARGETS: Array<{ file: string; size: number; maskable: boolean }> = [
-  { file: 'icon-192.png', size: 192, maskable: false },
-  { file: 'icon-192-maskable.png', size: 192, maskable: true },
-  { file: 'icon-512.png', size: 512, maskable: false },
-  { file: 'icon-512-maskable.png', size: 512, maskable: true },
-];
+async function plain(size: number, file: string): Promise<void> {
+  await sharp(SRC).resize(size, size).png({ compressionLevel: 9 }).toFile(path.join(ICONS, file));
+  console.log(`wrote ${file} (${size}x${size})`);
+}
+
+async function maskable(size: number, file: string): Promise<void> {
+  const innerSize = Math.round(size * 0.72);
+  const offset = Math.round((size - innerSize) / 2);
+  const inner = await sharp(SRC).resize(innerSize, innerSize).png().toBuffer();
+  await sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: { r: 15, g: 23, b: 42, alpha: 1 },
+    },
+  })
+    .composite([{ input: inner, left: offset, top: offset }])
+    .png({ compressionLevel: 9 })
+    .toFile(path.join(ICONS, file));
+  console.log(`wrote ${file} (${size}x${size}, maskable)`);
+}
 
 async function main(): Promise<void> {
-  const svg = fs.readFileSync(SVG_PATH).toString();
-  fs.mkdirSync(OUT_DIR, { recursive: true });
+  await sharp(SRC).resize(256, 256).png({ compressionLevel: 9 }).toFile(path.join(ICONS, 'logo-256.png'));
+  console.log('wrote logo-256.png (256x256)');
+  await sharp(SRC).resize(512, 512).png({ compressionLevel: 9 }).toFile(path.join(ICONS, 'logo-512.png'));
+  console.log('wrote logo-512.png (512x512)');
+  await sharp(SRC).resize(64, 64).png({ compressionLevel: 9 }).toFile(path.join(ROOT, 'app', 'icon.png'));
+  console.log('wrote app/icon.png (64x64 favicon)');
 
-  // Maskable: full-bleed dark tile + the mark scaled to 62.5% and centered
-  // inside the 80% safe zone (16x16..32x32 of the 48 viewBox).
-  const inner = svg
-    .replace(/<\/?svg[^>]*>/g, '')
-    .replace('<rect width="48" height="48" rx="10" fill="#0F172A"/>', '');
-  const maskableSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" fill="#0F172A"/><g transform="translate(9,9) scale(0.625)">${inner}</g></svg>`;
-
-  for (const { file, size, maskable } of TARGETS) {
-    // density = rasterized px per viewBox unit: 48-unit viewBox at
-    // (size/48)*72 dpi renders exactly `size` px, then resize is a no-op.
-    const density = Math.round((size / 48) * 72);
-    const input = Buffer.from(maskable ? maskableSvg : svg);
-    await sharp(input, { density }).resize(size, size).png({ compressionLevel: 9 }).toFile(path.join(OUT_DIR, file));
-    console.log(`wrote ${file} (${size}x${size}${maskable ? ', maskable' : ''})`);
-  }
+  await plain(192, 'icon-192.png');
+  await plain(512, 'icon-512.png');
+  await maskable(192, 'icon-192-maskable.png');
+  await maskable(512, 'icon-512-maskable.png');
 }
 
 main().catch((err) => {

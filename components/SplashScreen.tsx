@@ -63,29 +63,7 @@ export function SplashScreen() {
     el.innerHTML =
       '<div class="km-s-inner">' +
       '<div class="km-s-logo-glow">' +
-      '<svg class="km-s-logo" viewBox="0 0 48 48" fill="none" width="144" height="144" role="img" aria-label="Kanpur Metro Safar Guide logo">' +
-      '<defs>' +
-      '<linearGradient id="sp-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#1D4ED8"/></linearGradient>' +
-      '<linearGradient id="sp-a" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FBBF24"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>' +
-      '</defs>' +
-      '<line x1="1.5" y1="14" x2="7.5" y2="14" stroke="url(#sp-a)" stroke-width="1.8" stroke-linecap="round" opacity="0.35"/>' +
-      '<line x1="3" y1="19" x2="8" y2="19" stroke="url(#sp-a)" stroke-width="1.8" stroke-linecap="round" opacity="0.55"/>' +
-      '<line x1="1.5" y1="24" x2="7.5" y2="24" stroke="url(#sp-a)" stroke-width="1.8" stroke-linecap="round" opacity="0.35"/>' +
-      '<path d="M13 9 H32 Q40 9 43 17 V26 Q43 31 38 31 H13 Q9 31 9 27 V13 Q9 9 13 9 Z" fill="url(#sp-b)"/>' +
-      '<path d="M32.5 12.5 Q37.5 12.5 40.3 17.8 V20.5 H32.5 Z" fill="#0F172A" opacity="0.88"/>' +
-      '<rect x="13.5" y="13" width="8" height="6.5" rx="2" fill="white" opacity="0.92"/>' +
-      '<rect x="24" y="13" width="6.5" height="6.5" rx="2" fill="white" opacity="0.92"/>' +
-      '<rect x="11" y="25" width="29" height="3.2" rx="1.6" fill="url(#sp-a)"/>' +
-      '<circle cx="16" cy="32" r="2.8" fill="#334155" stroke="#94A3B8" stroke-width="0.9"/>' +
-      '<circle cx="16" cy="32" r="1.05" fill="#FBBF24"/>' +
-      '<circle cx="34" cy="32" r="2.8" fill="#334155" stroke="#94A3B8" stroke-width="0.9"/>' +
-      '<circle cx="34" cy="32" r="1.05" fill="#FBBF24"/>' +
-      '<rect x="4" y="35" width="40" height="2.6" rx="1.3" fill="url(#sp-a)" opacity="0.85"/>' +
-      '<rect x="7" y="39" width="3.2" height="2" rx="0.8" fill="#F59E0B" opacity="0.45"/>' +
-      '<rect x="17" y="39" width="3.2" height="2" rx="0.8" fill="#F59E0B" opacity="0.45"/>' +
-      '<rect x="27" y="39" width="3.2" height="2" rx="0.8" fill="#F59E0B" opacity="0.45"/>' +
-      '<rect x="37" y="39" width="3.2" height="2" rx="0.8" fill="#F59E0B" opacity="0.45"/>' +
-      '</svg>' +
+      '<img class="km-s-logo" src="/icons/logo-512.png" alt="Kanpur Metro Safar Guide logo" width="168" height="168" decoding="async" />' +
       '</div>' +
       '<div class="km-s-lockup">' +
       '<p class="km-s-kicker">KANPUR METRO</p>' +
