@@ -14,7 +14,7 @@ export function Footer() {
                 aria-hidden="true"
               >
                 <span className="flex h-full w-full items-center justify-center rounded-[8px] bg-white">
-                  <LogoIcon className="h-8 w-8" />
+                  <LogoIcon className="h-9 w-9" />
                 </span>
               </span>
               <div className="leading-tight">

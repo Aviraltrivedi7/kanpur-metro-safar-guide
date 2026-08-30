@@ -44,7 +44,7 @@ export function Navbar() {
             aria-hidden="true"
           >
             <span className="flex h-full w-full items-center justify-center rounded-[9px] bg-white">
-              <LogoIcon className="h-6 w-6" />
+              <LogoIcon className="h-7 w-7" />
             </span>
           </span>
           <span className="leading-tight">

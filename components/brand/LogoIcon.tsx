@@ -8,12 +8,13 @@ interface LogoIconProps {
 
 /**
  * Kanpur Metro Safar Guide — brand mark.
- * Bold side-view metro train: blue-gradient body, white windows,
- * amber speed stripe, motion lines, rail beneath.
- * useId-scoped gradient IDs — safe for multiple instances per page.
+ * Grounded side-view metro train: gradient body with sloped cab front,
+ * wraparound driver windshield, twin passenger windows, amber skirt stripe,
+ * steel wheels touching the rail. useId-scoped defs so multiple
+ * instances (navbar + footer) never collide on gradient IDs.
  */
 export function LogoIcon({ className }: LogoIconProps) {
-  const uid = useId();
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const bodyGrad = `km-body-${uid}`;
   const amberGrad = `km-amber-${uid}`;
   const glow = `km-glow-${uid}`;
@@ -44,37 +45,46 @@ export function LogoIcon({ className }: LogoIconProps) {
         </filter>
       </defs>
 
-      {/* Motion lines — suggest speed */}
-      <line x1="2" y1="15" x2="9" y2="15" stroke="#FBBF24" strokeWidth={1.8} strokeLinecap="round" opacity={0.35} />
-      <line x1="4" y1="21" x2="11" y2="21" stroke="#FBBF24" strokeWidth={1.8} strokeLinecap="round" opacity={0.5} />
-      <line x1="2" y1="27" x2="9" y2="27" stroke="#FBBF24" strokeWidth={1.8} strokeLinecap="round" opacity={0.35} />
+      {/* Speed lines behind the train */}
+      <line x1="1.5" y1="14" x2="7.5" y2="14" stroke={`url(#${amberGrad})`} strokeWidth={1.8} strokeLinecap="round" opacity={0.35} />
+      <line x1="3" y1="19" x2="8" y2="19" stroke={`url(#${amberGrad})`} strokeWidth={1.8} strokeLinecap="round" opacity={0.55} />
+      <line x1="1.5" y1="24" x2="7.5" y2="24" stroke={`url(#${amberGrad})`} strokeWidth={1.8} strokeLinecap="round" opacity={0.35} />
 
-      {/* Train body */}
-      <rect x="12" y="8" width="26" height="24" rx={5} fill={`url(#${bodyGrad})`} filter={`url(#${glow})`} />
+      {/* Body — rounded rear, sloped metro cab front */}
+      <path
+        d="M13 9 H32 Q40 9 43 17 V26 Q43 31 38 31 H13 Q9 31 9 27 V13 Q9 9 13 9 Z"
+        fill={`url(#${bodyGrad})`}
+        filter={`url(#${glow})`}
+      />
 
-      {/* Front nose — aerodynamic pointed right edge */}
-      <path d="M38 8 Q44 8 44 20 Q44 32 38 32" fill={`url(#${bodyGrad})`} />
+      {/* Wraparound driver windshield */}
+      <path
+        d="M32.5 12.5 Q37.5 12.5 40.3 17.8 V20.5 H32.5 Z"
+        fill="#0F172A"
+        opacity={0.88}
+      />
 
-      {/* Windows — three rounded panes */}
-      <rect x="15" y="12" width="6" height="7" rx={1.5} fill="white" opacity={0.92} />
-      <rect x="23" y="12" width="6" height="7" rx={1.5} fill="white" opacity={0.92} />
-      <rect x="31" y="12" width="6" height="7" rx={1.5} fill="white" opacity={0.92} />
+      {/* Passenger windows */}
+      <rect x="13.5" y="13" width="8" height="6.5" rx={2} fill="white" opacity={0.92} />
+      <rect x="24" y="13" width="6.5" height="6.5" rx={2} fill="white" opacity={0.92} />
 
-      {/* Door seams */}
-      <line x1="22" y1="8" x2="22" y2="32" stroke="white" strokeWidth={0.8} opacity={0.12} />
-      <line x1="30" y1="8" x2="30" y2="32" stroke="white" strokeWidth={0.8} opacity={0.12} />
+      {/* Amber skirt stripe */}
+      <rect x="11" y="25" width="29" height="3.2" rx={1.6} fill={`url(#${amberGrad})`} />
 
-      {/* Amber speed stripe — lower body accent */}
-      <rect x="12" y="28" width="26" height={3.5} rx={1.5} fill={`url(#${amberGrad})`} />
+      {/* Wheels — steel rim + amber hub, touching the rail */}
+      <circle cx="16" cy="32" r={2.8} fill="#334155" stroke="#94A3B8" strokeWidth={0.9} />
+      <circle cx="16" cy="32" r={1.05} fill="#FBBF24" />
+      <circle cx="34" cy="32" r={2.8} fill="#334155" stroke="#94A3B8" strokeWidth={0.9} />
+      <circle cx="34" cy="32" r={1.05} fill="#FBBF24" />
 
-      {/* Rail / track */}
-      <rect x="3" y="38" width="42" height={2.5} rx={1.25} fill={`url(#${amberGrad})`} opacity={0.7} />
+      {/* Rail */}
+      <rect x="4" y="35" width="40" height="2.6" rx={1.3} fill={`url(#${amberGrad})`} opacity={0.85} />
 
       {/* Track ties */}
-      <rect x="8" y="41.5" width={3} height={2} rx={1} fill="#F59E0B" opacity={0.45} />
-      <rect x="18" y="41.5" width={3} height={2} rx={1} fill="#F59E0B" opacity={0.45} />
-      <rect x="28" y="41.5" width={3} height={2} rx={1} fill="#F59E0B" opacity={0.45} />
-      <rect x="38" y="41.5" width={3} height={2} rx={1} fill="#F59E0B" opacity={0.45} />
+      <rect x="7" y="39" width="3.2" height="2" rx={0.8} fill="#F59E0B" opacity={0.45} />
+      <rect x="17" y="39" width="3.2" height="2" rx={0.8} fill="#F59E0B" opacity={0.45} />
+      <rect x="27" y="39" width="3.2" height="2" rx={0.8} fill="#F59E0B" opacity={0.45} />
+      <rect x="37" y="39" width="3.2" height="2" rx={0.8} fill="#F59E0B" opacity={0.45} />
     </svg>
   );
 }

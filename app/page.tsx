@@ -38,10 +38,15 @@ export default function HomePage() {
   return (
     <div className="pb-20 md:pb-0">
       {/* Hero */}
-      <section className="border-b border-app bg-gradient-to-b from-metro-blue/5 to-transparent">
-        <div className="container-page flex flex-col items-center gap-6 py-10 text-center sm:gap-8 sm:py-20">
+      <section className="relative overflow-hidden border-b border-app bg-gradient-to-b from-metro-blue/10 via-metro-blue/5 to-transparent">
+        {/* Decorative route line across the hero */}
+        <div className="km-hero-track" aria-hidden="true">
+          <span className="km-hero-track-train" />
+        </div>
+        <div className="container-page relative flex flex-col items-center gap-6 py-12 text-center sm:gap-8 sm:py-20">
           <div className="max-w-2xl">
-            <h1 className="text-xl font-bold leading-snug tracking-tight sm:text-4xl lg:text-5xl">
+            <p className="km-hero-badge">14 Operational &middot; Corridor 1</p>
+            <h1 className="mt-4 text-xl font-bold leading-snug tracking-tight sm:text-4xl lg:text-5xl">
               Kanpur Metro Safar, <span className="text-metro-blue">Ab Aur Easy.</span>
             </h1>
             <p className="mt-3 text-sm text-muted sm:mt-4 sm:text-lg">
@@ -95,8 +100,10 @@ export default function HomePage() {
               { href: '/metro-map', icon: Map, label: 'Metro Map', desc: 'Interactive route map' },
             ].map(({ href, icon: Icon, label, desc }) => (
               <li key={href}>
-                <Link href={href} className="card group flex h-full flex-col gap-2 p-4 transition-shadow duration-150 hover:shadow-elevated">
-                  <Icon className="h-6 w-6 text-metro-blue" aria-hidden="true" />
+                <Link href={href} className="card km-card-lift group flex h-full flex-col gap-2.5 p-4 transition-all duration-200 hover:shadow-elevated hover:ring-1 hover:ring-metro-blue/40">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-metro-blue/15 to-metro-blue/5 transition-transform duration-200 group-hover:scale-110">
+                    <Icon className="h-5 w-5 text-metro-blue" aria-hidden="true" />
+                  </span>
                   <span className="font-semibold">{label}</span>
                   <span className="text-xs text-muted">{desc}</span>
                 </Link>
@@ -113,14 +120,24 @@ export default function HomePage() {
               <li key={`${from.id}-${to.id}`}>
                 <Link
                   href={`/journey?from=${from.id}&to=${to.id}`}
-                  className="card group flex items-center justify-between gap-3 p-4 transition-shadow duration-150 hover:shadow-elevated"
+                  className="card km-card-lift group flex items-center justify-between gap-3 p-4 transition-all duration-200 hover:shadow-elevated hover:ring-1 hover:ring-metro-blue/40"
                 >
                   <span className="min-w-0 text-sm font-medium">
-                    <span className="block break-words">{from.name}</span>
-                    <MoveRight className="my-1 h-4 w-4 text-muted" aria-hidden="true" />
-                    <span className="block break-words">{to.name}</span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="km-stop-badge">{from.stationNumber}</span>
+                      <span className="break-words">{from.name}</span>
+                    </span>
+                    <span className="my-1.5 block pl-1.5">
+                      <MoveRight className="h-4 w-4 text-metro-blue transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="km-stop-badge">{to.stationNumber}</span>
+                      <span className="break-words">{to.name}</span>
+                    </span>
                   </span>
-                  <span className="shrink-0 text-xs font-medium text-metro-blue group-hover:underline">Plan</span>
+                  <span className="shrink-0 rounded-full bg-metro-blue/10 px-3 py-1.5 text-xs font-semibold text-metro-blue transition-colors duration-200 group-hover:bg-metro-blue group-hover:text-white">
+                    Plan
+                  </span>
                 </Link>
               </li>
             ))}
@@ -140,12 +157,17 @@ export default function HomePage() {
               const s = getStationById(id)!;
               return (
                 <li key={s.id}>
-                  <Link href={`/stations/${s.id}`} className="card flex h-full flex-col gap-1 p-4 transition-shadow duration-150 hover:shadow-elevated">
-                    <span className="flex items-center gap-1.5 text-sm font-semibold">
-                      <TrainFront className="h-4 w-4 text-metro-blue" aria-hidden="true" />
-                      {s.name}
+                  <Link href={`/stations/${s.id}`} className="card km-card-lift group flex h-full flex-col gap-1.5 p-4 transition-all duration-200 hover:shadow-elevated hover:ring-1 hover:ring-metro-blue/40">
+                    <span className="flex items-center gap-2">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-metro-blue/15 to-metro-blue/5">
+                        <TrainFront className="h-4 w-4 text-metro-blue" aria-hidden="true" />
+                      </span>
+                      <span className="truncate text-sm font-semibold">{s.name}</span>
                     </span>
                     <span className="text-xs text-muted">{s.nameHindi}</span>
+                    <span className="mt-auto pt-1 text-[11px] font-medium text-metro-blue/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                      View station &rarr;
+                    </span>
                   </Link>
                 </li>
               );
@@ -166,10 +188,13 @@ export default function HomePage() {
               const station = getStationById(l.nearestStationId);
               return (
                 <li key={l.id}>
-                  <Link href={`/explore/${l.id}`} className="card flex h-full flex-col gap-1.5 p-4 transition-shadow duration-150 hover:shadow-elevated">
-                    <span className="font-semibold">{l.name}</span>
+                  <Link href={`/explore/${l.id}`} className="card km-card-lift group flex h-full flex-col gap-1.5 p-4 transition-all duration-200 hover:shadow-elevated hover:ring-1 hover:ring-metro-blue/40">
+                    <span className="font-semibold group-hover:text-metro-blue transition-colors duration-200">{l.name}</span>
                     <span className="text-xs text-muted">
                       {station ? `Nearest: ${station.name}` : 'Nearest station TBD'}
+                    </span>
+                    <span className="mt-auto pt-1 text-[11px] font-medium text-metro-blue/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                      Explore &rarr;
                     </span>
                   </Link>
                 </li>
