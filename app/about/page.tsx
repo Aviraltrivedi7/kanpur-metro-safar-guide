@@ -33,7 +33,7 @@ const features: Feature[] = [
 ];
 
 export const metadata: Metadata = {
-  title: 'About | Kanpur Metro Safar Guide by Aviral Trivedi',
+  title: 'About',
   description:
     'Kanpur Metro Safar Guide is an independent project by Aviral Trivedi, built to make Kanpur Metro travel information simple and easy to find.',
   openGraph: {

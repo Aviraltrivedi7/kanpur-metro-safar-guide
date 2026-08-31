@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpDown, Search, TrainFront } from 'lucide-react';
+import { ArrowUpDown, Search } from 'lucide-react';
 import { stations, type StationStatus, type StationType } from '@/services/metro';
 import { cn } from '@/lib/utils';
 
@@ -108,15 +108,19 @@ export function StationDirectory() {
       <ul className="grid gap-3 sm:grid-cols-2">
         {results.map((s) => (
           <li key={s.id}>
-            <Link href={`/stations/${s.id}`} className="card flex h-full items-start gap-3 p-4 transition-shadow duration-150 hover:shadow-elevated">
+            <Link href={`/stations/${s.id}`} className="card km-card-lift flex h-full items-start gap-3 p-4 transition-all duration-200 hover:shadow-elevated hover:ring-1 hover:ring-metro-blue/40">
               <span
                 className={cn(
-                  'flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-sm font-bold',
-                  s.status === 'operational' ? 'bg-metro-blue text-white' : 'bg-surface text-muted'
+                  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg font-mono text-sm font-bold',
+                  s.status === 'operational'
+                    ? s.type === 'elevated'
+                      ? 'bg-metro-blue text-white'
+                      : 'bg-navy text-white'
+                    : 'bg-upcoming/15 text-upcoming'
                 )}
                 aria-hidden="true"
               >
-                <TrainFront className="h-5 w-5" />
+                {s.stationNumber}
               </span>
               <span className="min-w-0">
                 <span className="flex flex-wrap items-center gap-2">

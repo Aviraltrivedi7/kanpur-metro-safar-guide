@@ -72,11 +72,14 @@ function JourneyView({ journey }: { journey: Journey }) {
 
   return (
     <section className="card p-5 sm:p-6" aria-label="Journey result">
-      <div className="flex min-w-0 items-center gap-2 text-lg font-semibold">
+      <div className="flex min-w-0 flex-wrap items-center gap-2 text-lg font-semibold">
         <span className="truncate">{journey.from.name}</span>
         <MoveRight className="h-5 w-5 shrink-0 text-muted" aria-hidden="true" />
         <span className="truncate">{journey.to.name}</span>
       </div>
+      <p className="mt-1.5 text-sm text-muted">
+        Board a train towards <strong className="text-ink">{journey.direction.name}</strong>.
+      </p>
 
       <dl className="mt-4 grid grid-cols-3 gap-3">
         <div className="rounded-md bg-surface p-3">
@@ -101,10 +104,6 @@ function JourneyView({ journey }: { journey: Journey }) {
         </div>
       </dl>
 
-      <p className="mt-4 text-sm text-muted">
-        Board a train towards <strong className="text-ink">{journey.direction.name}</strong>.
-      </p>
-
       {/* Feature 2 — Travel mode entry */}
       <button
         type="button"
@@ -119,10 +118,12 @@ function JourneyView({ journey }: { journey: Journey }) {
         real-time tracking.
       </p>
 
-      {/* Vertical station line */}
+      {/* Vertical station line — origin and destination get accent dots */}
       <ol className="mt-5 space-y-0" aria-label="Stations on this journey">
         {journey.stations.map((s, i) => {
           const isTerminal = i === 0 || i === journey.stations.length - 1;
+          const isOrigin = i === 0;
+          const isDestination = i === journey.stations.length - 1;
           return (
             <li key={s.id} className="relative flex gap-3 pb-4 last:pb-0">
               {i < journey.stations.length - 1 && (
@@ -138,11 +139,24 @@ function JourneyView({ journey }: { journey: Journey }) {
                   isTerminal ? 'bg-metro-blue' : 'bg-card'
                 )}
               />
-              <div>
-                <Link href={`/stations/${s.id}`} className="text-sm font-medium hover:text-metro-blue">
-                  {s.name}
-                </Link>
-                <span className="ml-2 text-xs text-muted">{s.nameHindi}</span>
+              <div className="min-w-0">
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                  <Link href={`/stations/${s.id}`} className="text-sm font-medium hover:text-metro-blue">
+                    {s.name}
+                  </Link>
+                  <span className="text-xs text-muted">{s.nameHindi}</span>
+                  {isOrigin && (
+                    <span className="badge bg-metro-blue/10 text-metro-blue">Board here</span>
+                  )}
+                  {isDestination && (
+                    <span className="badge bg-accent/15 text-accent">Get off here</span>
+                  )}
+                </p>
+                {isDestination && (
+                  <p className="mt-1 text-xs font-medium text-muted">
+                    Last stop for this journey — train continues to {journey.direction.name}.
+                  </p>
+                )}
               </div>
             </li>
           );
