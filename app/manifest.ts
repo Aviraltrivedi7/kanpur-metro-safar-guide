@@ -6,6 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: SITE_NAME,
     short_name: 'KM Safar',
     description: SITE_TAGLINE,
+    id: '/',
     start_url: '/',
     display: 'standalone',
     orientation: 'portrait-primary',

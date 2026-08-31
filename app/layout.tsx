@@ -28,11 +28,21 @@ export const metadata: Metadata = {
     template: `%s — ${SITE_NAME}`,
   },
   description: SITE_TAGLINE,
+  applicationName: 'KM Safar Guide',
+  appleWebApp: {
+    capable: true,
+    title: 'KM Safar Guide',
+    statusBarStyle: 'black-translucent',
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: [
       { url: '/icon.png', sizes: '64x64', type: 'image/png' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
+    apple: [{ url: '/icons/logo-512.png', sizes: '512x512' }],
   },
   openGraph: {
     type: 'website',
@@ -59,10 +69,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
       <head />
       <body className="min-h-screen flex flex-col">
-        {/* Client-side splash controller: shows the branded startup overlay
-            ONCE per device (localStorage), never on SPA navigation, and
-            removes itself after the animation. Nothing is hidden by CSS —
-            no white screen risk. */}
+        {/* App-only launch splash: renders nothing in browser tabs; shows the
+            branded animation when launched as an installed PWA. */}
         <SplashScreen />
         <ThemeProvider>
           <LanguageProvider>

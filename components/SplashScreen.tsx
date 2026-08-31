@@ -5,21 +5,20 @@ import { useEffect, useRef } from 'react';
 export const SPLASH_ID = 'km-splash';
 
 /**
- * Startup splash — client-side controller with single-mount guarantee.
+ * PWA app launch splash — shown ONLY when the site runs as an installed app
+ * (standalone/fullscreen display mode, or iOS navigator.standalone).
  *
- * CRITICAL FIX: React re-renders the layout on every SPA navigation and, if
- * the splash were still a server-side `dangerouslySetInnerHTML` div, React
- * would re-inject it into the DOM on every page change. This component
- * instead:
- *   1. Renders null by itself (no SSR HTML).
- *   2. On MOUNT ONLY (first app mount, useRef guard), checks localStorage.
- *   3. If this device has NEVER seen the splash: renders + animates the
- *      shell, marks localStorage, then removes it after the animation.
- *   4. If seen before, or on any SPA re-render: does nothing — the splash
- *      never reappears, the app never flashes white.
+ * Rules:
+ *   - WEBSITE (normal browser tab): never shows anything. Zero splash.
+ *   - INSTALLED APP: branded launch splash on EVERY launch, exactly like a
+ *     native app — the OS manifest splash hands off to this animated one.
  *
- * Because the mount guard is instance-level (useRef), Next.js layout
- * re-renders on navigation cannot trigger it again.
+ * Rendering strategy (unchanged from the original design):
+ *   1. Renders null by itself (no SSR HTML, nothing paint-blocking).
+ *   2. On MOUNT ONLY (useRef guard) checks the display mode, then builds and
+ *      appends the overlay imperatively and removes it after the animation.
+ *   3. Instance-level mount guard means Next.js layout re-renders on SPA
+ *      navigation can never re-trigger it.
  */
 export function SplashScreen() {
   const hasRun = useRef(false);
@@ -28,20 +27,13 @@ export function SplashScreen() {
     if (hasRun.current) return;
     hasRun.current = true;
 
-    let shown = true;
-    try {
-      shown = !!window.localStorage.getItem('km_splash_shown');
-    } catch {
-      /* storage blocked → treat as shown, never trap the user */
-    }
-    if (shown) return;
-
-    // Very first start on this device (or after user cleared storage).
-    try {
-      window.localStorage.setItem('km_splash_shown', '1');
-    } catch {
-      /* continue even if we can't persist; still show the splash */
-    }
+    // Installed-app detection: Android/desktop uses display-mode, iOS A2HS
+    // exposes navigator.standalone.
+    const isAppLaunch =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
+    if (!isAppLaunch) return;
 
     const reduced =
       typeof window.matchMedia === 'function' &&
@@ -85,7 +77,7 @@ export function SplashScreen() {
     document.body.appendChild(el);
 
     // After min duration (or immediately on reduced-motion) fade it out.
-    const minMs = reduced ? 0 : 2200;
+    const minMs = reduced ? 0 : 2400;
     const removeTimer = window.setTimeout(() => {
       el.classList.add('km-splash-done');
       window.setTimeout(() => {
