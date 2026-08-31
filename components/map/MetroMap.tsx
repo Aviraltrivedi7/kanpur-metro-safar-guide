@@ -19,6 +19,8 @@ export function MetroMap() {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const totalWidth = xFor(upcomingStations[upcomingStations.length - 1].stationNumber) + 80;
+  // Distance the map train covers per loop — exactly the operational segment.
+  const trainTravel = xFor(operationalStations[operationalStations.length - 1].stationNumber) - xFor(1);
 
   const viewBox = useMemo(() => `0 0 ${totalWidth} 300`, [totalWidth]);
 
@@ -35,6 +37,8 @@ export function MetroMap() {
           onClick={() => setSelected(s)}
           className="cursor-pointer"
         >
+          {/* Transparent 44px hit area so touch taps never miss the 16px dot */}
+          <circle cx={x} cy={Y} r={22} fill="transparent" />
           <circle
             cx={x}
             cy={Y}
@@ -141,12 +145,26 @@ export function MetroMap() {
 
           {operationalStations.map(renderStation)}
           {upcomingStations.map(renderStation)}
+
+          {/* Decorative train gliding along the operational segment —
+              pointer-events: none keeps it from stealing station taps, and
+              prefers-reduced-motion hides it entirely. */}
+          <g
+            className="km-map-train"
+            style={{ ['--km-travel' as string]: `${trainTravel}px` }}
+            aria-hidden="true"
+          >
+            <rect x={xFor(1) - 26} y={Y - 11} width="52" height="22" rx="7" fill="var(--color-metro-blue)" />
+            <rect x={xFor(1) - 20} y={Y - 6} width="14" height="9" rx="3" fill="#ffffff" opacity="0.85" />
+            <circle cx={xFor(1) - 16} cy={Y + 12} r="3.5" fill="var(--color-metro-blue)" />
+            <circle cx={xFor(1) + 16} cy={Y + 12} r="3.5" fill="var(--color-metro-blue)" />
+          </g>
         </svg>
       </div>
 
       {/* Selected station panel */}
       {selected && (
-        <div className="card p-4" role="status">
+        <div className="card km-panel-in p-4" role="status">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="font-semibold">{selected.name} <span className="ml-1 text-sm font-normal text-muted">{selected.nameHindi}</span></p>

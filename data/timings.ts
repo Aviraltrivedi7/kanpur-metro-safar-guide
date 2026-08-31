@@ -9,7 +9,6 @@
 export interface LineTimings {
   firstTrain: string;
   lastTrain: string;
-  frequencyMinutes: number | null;
   verified: boolean;
   note: string;
 }
@@ -17,9 +16,10 @@ export interface LineTimings {
 export const lineTimings: LineTimings = {
   firstTrain: '06:00',
   lastTrain: '22:00',
-  frequencyMinutes: null, // UNVERIFIED — no official frequency published
   verified: true,
-  note: 'Services run daily. Exact frequency and holiday timings are not officially published; check at the station.',
+  // Published frequency (6–10 min) lives in metroConfig headway values —
+  // this note stays honest about what is NOT published.
+  note: 'Services run daily. The published frequency is approx. every 6–10 minutes; exact per-hour and holiday timings are not officially published — check at the station.',
 };
 
 /**
@@ -57,7 +57,7 @@ export const metroConfig = {
 export type MetroConfig = typeof metroConfig;
 
 /** Human-readable headway tagline, e.g. "approx. every 6–10 min". */
-export const HEADWAY_TAGLINE = `approx. every ${metroConfig.peakHeadwayMinutes}–${metroConfig.offPeakHeadwayMinutes} min`; // UNVERIFIED
+export const HEADWAY_TAGLINE = `approx. every ${metroConfig.peakHeadwayMinutes}–${metroConfig.offPeakHeadwayMinutes} min`; // published statement; "approx." retained for honesty
 
 /** Mandatory honesty disclaimer shown wherever arrival times appear. */
 export const ARRIVAL_TIMES_DISCLAIMER = `Times based on published schedule (${HEADWAY_TAGLINE}). Real-time arrivals unavailable. Please verify at the station.`;

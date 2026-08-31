@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { CalendarClock, Clock11, TrainFront } from 'lucide-react';
 import {
   OPERATIONAL_STATION_COUNT,
@@ -8,6 +8,7 @@ import {
   lineTimings,
   upcomingStations,
 } from '@/services/metro';
+import { metroConfig } from '@/data/timings';
 import { trackEvent } from '@/lib/analytics';
 
 const LAST_VISIT_KEY = 'kanpur_metro_last_visit';
@@ -36,13 +37,18 @@ export function TodayWidget() {
     }
   }, []);
 
+  // Date must be resolved client-side — SSR and first client render run on
+  // different days across the midnight boundary, which would otherwise be a
+  // guaranteed hydration mismatch on the visible date label.
+  const [aaj, setAaj] = useState<Date | null>(null);
+  useEffect(() => {
+    setAaj(new Date());
+  }, []);
+
   const status = getNetworkStatus();
-  const aaj = new Date();
-  const dateLabel = aaj.toLocaleDateString('en-IN', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'short',
-  });
+  const dateLabel = aaj
+    ? aaj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short' })
+    : null;
 
   return (
     <section className="card p-4 sm:p-6" aria-label="Kanpur Metro today">
@@ -51,9 +57,13 @@ export function TodayWidget() {
           <CalendarClock className="h-5 w-5 text-metro-blue" aria-hidden="true" />
           Kanpur Metro — Aaj
         </h2>
-        <time dateTime={aaj.toISOString()} className="text-sm text-muted">
-          {dateLabel}
-        </time>
+        {aaj && dateLabel ? (
+          <time dateTime={aaj.toISOString()} className="text-sm text-muted">
+            {dateLabel}
+          </time>
+        ) : (
+          <span className="text-sm text-muted" aria-hidden="true">Aaj</span>
+        )}
       </div>
 
       <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -99,7 +109,7 @@ export function TodayWidget() {
         Network: <strong className="text-ink">{status.label}</strong> — {status.note}
       </p>
       <p className="mt-1 text-xs text-muted">
-        Timings last verified: 2026-08-08 · {lineTimings.note}
+        Timings last verified: {metroConfig.lastVerified} · {lineTimings.note}
       </p>
     </section>
   );

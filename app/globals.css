@@ -564,7 +564,30 @@ h1, h2, h3, h4 {
   font-weight: 700;
 }
 
+/* Interactive map — metro train gliding along the operational segment */
+.km-map-train {
+  pointer-events: none;
+  animation: km-map-train-ride 16s linear infinite;
+}
+@keyframes km-map-train-ride {
+  0% { transform: translateX(0); opacity: 0; }
+  4% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { transform: translateX(var(--km-travel, 1014px)); opacity: 0; }
+}
+
+/* Selected-station panel entrance on the map page */
+.km-panel-in {
+  animation: km-panel-in 0.25s ease-out;
+}
+@keyframes km-panel-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .km-hero-track-train { animation: none; }
   .km-card-lift:hover { transform: none; }
+  .km-map-train { display: none; }
+  .km-panel-in { animation: none; }
 }
