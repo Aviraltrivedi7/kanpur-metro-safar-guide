@@ -67,10 +67,22 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
-      <head />
+      <head>
+        {/* App-launch detection BEFORE the first paint: in the installed PWA
+            the splash overlay (shipped in the SSR HTML) must be visible in
+            frame one; in a normal browser tab it must never appear. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var s=false;var m=window.matchMedia;if(m&&(m('(display-mode: standalone)').matches||m('(display-mode: fullscreen)').matches))s=true;if(!s&&window.navigator.standalone===true)s=true;if(s)document.documentElement.classList.add('km-app-launch');}catch(e){}})();",
+          }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col">
-        {/* App-only launch splash: renders nothing in browser tabs; shows the
-            branded animation when launched as an installed PWA. */}
+        {/* App-only launch splash: the overlay is server-rendered so the
+            installed app shows it in the first painted frame (no home-page
+            flash); on the website it never becomes visible and React strips
+            the node after mount. */}
         <SplashScreen />
         <ThemeProvider>
           <LanguageProvider>

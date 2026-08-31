@@ -315,21 +315,34 @@ h1, h2, h3, h4 {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   STARTUP SPLASH — client-generated once per device (localStorage).
-   NO CSS hides the app content; there is ZERO white-screen risk.
-   The splash element is created/mounted in JS by <SplashScreen/> and
-   removed after the animation (2.2s, or instantly on reduced motion).
+   APP-LAUNCH SPLASH — server-rendered overlay, visible ONLY in the
+   installed app. An inline <head> script flags app launches by adding
+   .km-app-launch to <html> BEFORE the first paint, so the app shows the
+   splash in frame one (no "home page, then splash" flash). Website tabs
+   never see it: without the flag it stays display:none, and React strips
+   the node after mount. JS fades it out at ~2.4s; the safety animation
+   hides it even if JS never loads.
    ═══════════════════════════════════════════════════════════════════ */
 #km-splash {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: #0f172a;
   user-select: none;
+}
+/* App launch: visible from the first painted frame. */
+html.km-app-launch #km-splash {
+  display: flex;
+  /* Safety net: if JS never runs, the overlay still fades itself out. */
+  animation: km-splash-safety 3.5s ease forwards;
+}
+@keyframes km-splash-safety {
+  0%, 86% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
 }
 #km-splash.km-splash-done {
   opacity: 0;
