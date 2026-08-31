@@ -12,7 +12,10 @@ export type TrackEventName =
   | 'shared_journey_opened'
   | 'return_visit'
   | 'travel_mode_started'
-  | 'near_me_used';
+  | 'near_me_used'
+  | 'install_prompt_shown'
+  | 'install_prompt_dismissed'
+  | 'install_prompt_accepted';
 
 export function trackEvent(name: TrackEventName, payload?: Record<string, string | number>) {
   if (typeof window === 'undefined') return;
