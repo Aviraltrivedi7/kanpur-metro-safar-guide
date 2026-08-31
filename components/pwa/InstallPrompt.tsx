@@ -13,14 +13,18 @@ export function InstallPrompt() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    let promptTimer: number | undefined;
     function onBeforeInstall(e: Event) {
       e.preventDefault();
       setDeferred(e as BeforeInstallPromptEvent);
       // Spec: show install prompt only after ~30s, not immediately.
-      setTimeout(() => setVisible(true), 30_000);
+      promptTimer = window.setTimeout(() => setVisible(true), 30_000);
     }
     window.addEventListener('beforeinstallprompt', onBeforeInstall);
-    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+    return () => {
+      window.clearTimeout(promptTimer);
+      window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+    };
   }, []);
 
   if (!visible || !deferred) return null;
